@@ -328,7 +328,6 @@ export default function Home() {
         // Clear all conversation data
         setHistory([]);
         setSummary('');
-        setActiveDocumentName(data.cleared_docs);
         setDocuments([]); // Clear documents list
         setUploadStatus('');
         

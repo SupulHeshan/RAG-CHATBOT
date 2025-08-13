@@ -44,7 +44,6 @@ app.add_middleware(
 # Global state
 active_document = "essay.txt"  # Default document
 document_metadata = {}  # Store metadata for each document
-documents = []
 
 # Build the RAG chain once at startup
 rag_chain = get_rag_chain(document_path=active_document)
@@ -424,10 +423,8 @@ async def activate_document(filename: str):
 @app.post("/reset-memory")
 async def reset_memory():
     """Reset the conversation memory and active document"""
-    global active_document, rag_chain
-    documents = []
     try:
-        if rag_chain and hasattr(rag_chain, 'memory') and rag_chain.memory and active_document is not None:
+        if hasattr(rag_chain, 'memory') and rag_chain.memory is not None:
             if hasattr(rag_chain.memory, 'chat_memory'):
                 rag_chain.memory.chat_memory.clear()
             if hasattr(rag_chain.memory, 'buffer'):
@@ -435,8 +432,7 @@ async def reset_memory():
             elif hasattr(rag_chain.memory, 'moving_summary_buffer'):  # Backward compatibility
                 rag_chain.memory.moving_summary_buffer = ""
 
-            active_document = "essay.txt"
-            documents = []
+         
 
             logger.info("Conversation memory reset successfully")
             return {
