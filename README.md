@@ -5,7 +5,10 @@ A modern, intelligent Retrieval-Augmented Generation (RAG) chatbot system with c
 ## 🎬 Demo Video
 
 
-https://github.com/user-attachments/assets/93a29be4-5d9d-4350-8a4f-ed80c82be29f
+
+https://github.com/user-attachments/assets/0013dbf6-f0bd-4d58-8852-ace0300d6d62
+
+
 
 
 
