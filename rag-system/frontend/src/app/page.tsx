@@ -309,12 +309,12 @@ export default function Home() {
   };
 
   // Reset the conversation memory
-  const resetMemory = async (url = apiUrl) => {
+  const resetChatMemory = async (url = apiUrl) => {
     if (serverStatus !== 'online' || !url) return;
     
     try {
       setLoading(true);
-      const response = await fetch(`${url}/reset-memory`, {
+      const response = await fetch(`${url}/reset-chat-memory`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -328,10 +328,6 @@ export default function Home() {
         // Clear all conversation data
         setHistory([]);
         setSummary('');
-        setDocuments([]); // Clear documents list
-        setUploadStatus('');
-        
-    
 
         // Show confirmation to the user
         setError(''); // Clear any previous error
@@ -357,6 +353,50 @@ export default function Home() {
     }
   };
 
+  // Reset the conversation memory
+  const resetDocumentMemory = async (url = apiUrl) => {
+    if (serverStatus !== 'online' || !url) return;
+    
+    try {
+      setLoading(true);
+      const response = await fetch(`${url}/reset-document-memory`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Memory reset successful:', data);
+    
+        setDocuments([]); // Clear documents list
+        setUploadStatus('');
+        
+        // Show confirmation to the user
+        setError(''); // Clear any previous error
+        
+        // Add system message to history
+        const systemMessage = { role: 'ai', content: 'Memory has been reset successfully.' };
+        setHistory([systemMessage]);
+        
+        // Refresh history data
+        setTimeout(() => {
+          fetchHistory(url);
+        }, 500);
+      } else {
+        console.error('Failed to reset memory:', response.status);
+        const errorData = await response.json().catch(() => ({ detail: 'Unknown error occurred' }));
+        setError(`Failed to reset memory: ${errorData.detail || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error resetting memory:', error);
+      setError('Network error when resetting memory. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   // Format file size
   const formatFileSize = (size: number) => {
     if (size < 1024) return `${size} B`;
@@ -509,7 +549,7 @@ export default function Home() {
                 {/* Memory Management Button */}
                 <button
                   onClick={() => {
-                    if (apiUrl) resetMemory(apiUrl);
+                    if (apiUrl) resetChatMemory(apiUrl);
                   }}
                   className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-center transition-colors flex items-center justify-center"
                   disabled={serverStatus !== 'online'}
@@ -517,7 +557,21 @@ export default function Home() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
                   </svg>
-                  Reset Memory
+                  Reset Chat Memory
+                </button>
+
+                {/* Memory Management Button */}
+                <button
+                  onClick={() => {
+                    if (apiUrl) resetDocumentMemory(apiUrl);
+                  }}
+                  className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-center transition-colors flex items-center justify-center"
+                  disabled={serverStatus !== 'online'}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                  </svg>
+                  Reset Document Memory
                 </button>
                 
                 {/* Toggle Debug Panel */}
@@ -721,7 +775,7 @@ export default function Home() {
             <div className="mt-4 text-right">
               <button 
                 onClick={() => {
-                  if (apiUrl) resetMemory(apiUrl);
+                  if (apiUrl) resetChatMemory(apiUrl);
                 }}
                 className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-500 transition-colors text-sm font-medium"
               >

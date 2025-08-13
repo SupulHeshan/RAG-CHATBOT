@@ -420,9 +420,9 @@ async def activate_document(filename: str):
         )
 
 # Reset memory endpoint
-@app.post("/reset-memory")
-async def reset_memory():
-    """Reset the conversation memory and active document"""
+@app.post("/reset-chat-memory")
+async def reset_chat_memory():
+    """Reset the conversation memory"""
     try:
         if hasattr(rag_chain, 'memory') and rag_chain.memory is not None:
             if hasattr(rag_chain.memory, 'chat_memory'):
@@ -450,6 +450,43 @@ async def reset_memory():
         raise HTTPException(
             status_code=500,
             detail=f"Failed to reset memory: {str(e)}"
+        )
+
+# Reset document memory endpoint
+@app.post("/reset-document-memory")
+async def reset_document_memory():
+    """Reset the document memory, status, and uploaded files"""
+    global rag_chain
+    try:
+        # Reset document metadata
+        if hasattr(rag_chain, 'doc_status') and rag_chain.doc_status is not None:
+            rag_chain.doc_status.clear()
+
+        # Clear uploaded files 
+        if os.path.exists(UPLOAD_DIR):
+            for file_name in os.listdir(UPLOAD_DIR):
+                file_path = os.path.join(UPLOAD_DIR, file_name)
+                if file_name.lower().endswith(".pdf") and os.path.isfile(file_path):
+                    os.remove(file_path)
+
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail="No memory to reset"
+            )
+            logger.error("No document memory to reset") 
+
+        return {
+            "status": "success",
+            "message": "Document memory, status, and uploaded files reset",
+            "timestamp": datetime.now().isoformat()
+        }
+    
+    except Exception as e:
+        logger.error(f"Failed to reset document memory: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to reset document memory: {str(e)}"
         )
 
 # Force summary generation endpoint
