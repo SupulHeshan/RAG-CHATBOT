@@ -1,6 +1,6 @@
 # 🤖 RAG Chatbot with Memory
 
-A modern, intelligent Retrieval-Augmented Generation (RAG) chatbot system with conversation memory, document management, and advanced text processing capabilities.
+A modern, intelligent Retrieval-Augmented Generation (RAG) chatbot equipped with conversation memory, efficient document handling, and powerful text processing for smarter, context-aware interactions.
 
 ## 🎬 Demo Video
 
