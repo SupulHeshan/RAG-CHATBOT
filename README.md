@@ -1,5 +1,4 @@
-# <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/73dded43-8e7d-4de4-a50c-152cd7798d6d" />
- RAG Chatbot with Memory
+# 🤖 RAG Chatbot with Memory
 
 A modern, intelligent Retrieval-Augmented Generation (RAG) chatbot equipped with conversation memory, efficient document handling, and powerful text processing for smarter, context-aware interactions.
 
